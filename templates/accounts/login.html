@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}লগইন{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card shadow-sm mt-4">
+            <div class="card-body p-4">
+                <h4 class="text-center mb-4">🎓 কল্পলোক একাডেমি<br><small class="text-muted">লগইন করুন</small></h4>
+                {% if form.errors %}
+                    <div class="alert alert-danger">ইউজারনেম অথবা পাসওয়ার্ড সঠিক নয়।</div>
+                {% endif %}
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">ইউজারনেম</label>
+                        {{ form.username }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">পাসওয়ার্ড</label>
+                        {{ form.password }}
+                    </div>
+                    <button type="submit" class="btn btn-brand w-100">লগইন</button>
+                    <input type="hidden" name="next" value="{{ next }}">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

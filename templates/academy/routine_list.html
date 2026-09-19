@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}ক্লাস রুটিন{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>ক্লাস রুটিন</h4>
+    {% if user.is_admin_role %}
+        <a href="{% url 'routine_add' %}" class="btn btn-brand btn-sm">+ নতুন রুটিন</a>
+    {% endif %}
+</div>
+
+{% if user.is_admin_role %}
+<form method="get" class="row g-2 mb-3">
+    <div class="col-auto">
+        <select name="class" class="form-select" onchange="this.form.submit()">
+            <option value="">সব শ্রেণি</option>
+            {% for c in classes %}
+                <option value="{{ c.id }}" {% if class_filter == c.id|stringformat:"s" %}selected{% endif %}>{{ c }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</form>
+{% endif %}
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>বার</th><th>শ্রেণি</th><th>বিষয়</th><th>শিক্ষক</th><th>সময়</th><th>রুম</th>
+                    {% if user.is_admin_role %}<th></th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+            {% for r in routines %}
+                <tr>
+                    <td>{{ r.get_day_display }}</td>
+                    <td>{{ r.school_class }}</td>
+                    <td>{{ r.subject }}</td>
+                    <td>{{ r.teacher.get_full_name|default:"-" }}</td>
+                    <td>{{ r.start_time }} - {{ r.end_time }}</td>
+                    <td>{{ r.room|default:"-" }}</td>
+                    {% if user.is_admin_role %}
+                    <td>
+                        <a href="{% url 'routine_edit' r.pk %}" class="btn btn-sm btn-outline-secondary">সম্পাদনা</a>
+                        <a href="{% url 'routine_delete' r.pk %}" class="btn btn-sm btn-outline-danger">মুছুন</a>
+                    </td>
+                    {% endif %}
+                </tr>
+            {% empty %}
+                <tr><td colspan="7" class="text-center text-muted py-4">কোনো রুটিন পাওয়া যায়নি।</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

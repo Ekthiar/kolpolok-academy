@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}শিক্ষক ড্যাশবোর্ড{% endblock %}
+{% block content %}
+<h3 class="mb-4">স্বাগতম, {{ user.get_full_name|default:user.username }}</h3>
+
+<div class="row g-4">
+    <div class="col-md-7">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title">আমার ক্লাস রুটিন</h5>
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle">
+                        <thead><tr><th>বার</th><th>শ্রেণি</th><th>বিষয়</th><th>সময়</th><th>রুম</th></tr></thead>
+                        <tbody>
+                        {% for r in routines %}
+                            <tr>
+                                <td>{{ r.get_day_display }}</td>
+                                <td>{{ r.school_class }}</td>
+                                <td>{{ r.subject }}</td>
+                                <td>{{ r.start_time }} - {{ r.end_time }}</td>
+                                <td>{{ r.room }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="5" class="text-muted">কোনো রুটিন যুক্ত হয়নি।</td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">দ্রুত কাজ</h5>
+                <a href="{% url 'exam_add' %}" class="btn btn-brand btn-sm">নতুন পরীক্ষা তৈরি করুন</a>
+                <a href="{% url 'exam_list' %}" class="btn btn-outline-secondary btn-sm">ফলাফল ব্যবস্থাপনা</a>
+                <a href="{% url 'attendance_mark' %}" class="btn btn-outline-secondary btn-sm">উপস্থিতি নিন</a>
+                <a href="{% url 'notice_add' %}" class="btn btn-outline-secondary btn-sm">নোটিশ দিন</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">নোটিশ</h5>
+                <ul class="list-group list-group-flush">
+                    {% for n in notices %}
+                        <li class="list-group-item">{{ n.title }}</li>
+                    {% empty %}
+                        <li class="list-group-item text-muted">কোনো নোটিশ নেই।</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

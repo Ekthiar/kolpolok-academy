@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}ফলাফল যুক্ত করুন{% endblock %}
+{% block content %}
+<h4 class="mb-1">{{ exam.name }}</h4>
+<p class="text-muted">{{ exam.school_class }} | {{ exam.subject }} | পূর্ণমান: {{ exam.total_marks }} | তারিখ: {{ exam.date }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table mb-0 align-middle">
+                <thead class="table-light"><tr><th>রোল</th><th>শিক্ষার্থীর নাম</th><th>প্রাপ্ত নম্বর</th><th>মন্তব্য</th></tr></thead>
+                <tbody>
+                {% for row in rows %}
+                    <tr>
+                        <td>{{ row.student.student_profile.roll_number|default:"-" }}</td>
+                        <td>{{ row.student.get_full_name|default:row.student.username }}</td>
+                        <td>
+                            <input type="number" step="0.01" min="0" max="{{ exam.total_marks }}"
+                                   name="marks_{{ row.student.id }}" value="{{ row.marks_obtained }}"
+                                   class="form-control form-control-sm" style="max-width:120px;">
+                        </td>
+                        <td>
+                            <input type="text" name="remarks_{{ row.student.id }}" value="{{ row.remarks }}"
+                                   class="form-control form-control-sm">
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4" class="text-center text-muted py-4">এই শ্রেণিতে কোনো শিক্ষার্থী নেই।</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-brand mt-3">ফলাফল সংরক্ষণ করুন</button>
+</form>
+{% endblock %}

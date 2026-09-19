@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}আমার ফলাফল{% endblock %}
+{% block content %}
+<h4 class="mb-3">আমার ফলাফল</h4>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-auto">
+        <select name="exam_type" class="form-select" onchange="this.form.submit()">
+            <option value="">সব ধরনের পরীক্ষা</option>
+            <option value="WEEKLY" {% if exam_filter == "WEEKLY" %}selected{% endif %}>সাপ্তাহিক পরীক্ষা</option>
+            <option value="MONTHLY" {% if exam_filter == "MONTHLY" %}selected{% endif %}>মাসিক পরীক্ষা</option>
+            <option value="MODEL" {% if exam_filter == "MODEL" %}selected{% endif %}>মডেল টেস্ট</option>
+            <option value="FINAL" {% if exam_filter == "FINAL" %}selected{% endif %}>বার্ষিক/চূড়ান্ত পরীক্ষা</option>
+        </select>
+    </div>
+</form>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light"><tr><th>পরীক্ষা</th><th>ধরন</th><th>বিষয়</th><th>তারিখ</th><th>প্রাপ্ত নম্বর</th><th>শতকরা</th><th>গ্রেড</th><th>মন্তব্য</th></tr></thead>
+            <tbody>
+            {% for r in results %}
+                <tr>
+                    <td>{{ r.exam.name }}</td>
+                    <td>{{ r.exam.get_exam_type_display }}</td>
+                    <td>{{ r.exam.subject }}</td>
+                    <td>{{ r.exam.date }}</td>
+                    <td>{{ r.marks_obtained }}/{{ r.exam.total_marks }}</td>
+                    <td>{{ r.percentage }}%</td>
+                    <td><span class="badge bg-secondary">{{ r.grade }}</span></td>
+                    <td>{{ r.remarks|default:"-" }}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="8" class="text-center text-muted py-4">কোনো ফলাফল পাওয়া যায়নি।</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

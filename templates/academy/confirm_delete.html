@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}মুছে ফেলার নিশ্চিতকরণ{% endblock %}
+{% block content %}
+<div class="card shadow-sm" style="max-width:520px;margin:auto;">
+    <div class="card-body text-center">
+        <h4 class="mb-3">আপনি কি নিশ্চিত?</h4>
+        <p>"<strong>{{ object }}</strong>" মুছে ফেলতে চান? এই কাজটি বাতিল করা যাবে না।</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">হ্যাঁ, মুছে ফেলুন</button>
+            <a href="{% url back_url %}" class="btn btn-outline-secondary">বাতিল</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

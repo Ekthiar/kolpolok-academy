@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load academy_extras %}
+{% block title %}উপস্থিতি নিন{% endblock %}
+{% block content %}
+<h4 class="mb-3">উপস্থিতি নিন</h4>
+
+<form method="get" class="row g-2 mb-3 align-items-end">
+    <div class="col-auto">
+        <label class="form-label">শ্রেণি</label>
+        <select name="school_class" class="form-select" onchange="this.form.submit()">
+            <option value="">-- শ্রেণি নির্বাচন করুন --</option>
+            {% for c in school_classes %}
+                <option value="{{ c.id }}" {% if selected_class_id == c.id|stringformat:"s" %}selected{% endif %}>{{ c }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-auto">
+        <label class="form-label">তারিখ</label>
+        <input type="date" name="date" value="{{ selected_date }}" class="form-control" onchange="this.form.submit()">
+    </div>
+</form>
+
+{% if students %}
+<form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="school_class" value="{{ selected_class_id }}">
+    <input type="hidden" name="date" value="{{ selected_date }}">
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table mb-0 align-middle">
+                <thead class="table-light"><tr><th>রোল</th><th>নাম</th><th>উপস্থিতি</th></tr></thead>
+                <tbody>
+                {% for s in students %}
+                    {% with current_status=existing|get_item:s.id|default:"PRESENT" %}
+                    <tr>
+                        <td>{{ s.student_profile.roll_number|default:"-" }}</td>
+                        <td>{{ s.get_full_name|default:s.username }}</td>
+                        <td>
+                            <select name="status_{{ s.id }}" class="form-select form-select-sm" style="max-width:180px;">
+                                <option value="PRESENT" {% if current_status == "PRESENT" %}selected{% endif %}>উপস্থিত</option>
+                                <option value="ABSENT" {% if current_status == "ABSENT" %}selected{% endif %}>অনুপস্থিত</option>
+                                <option value="LATE" {% if current_status == "LATE" %}selected{% endif %}>বিলম্বে উপস্থিত</option>
+                            </select>
+                        </td>
+                    </tr>
+                    {% endwith %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-brand mt-3">উপস্থিতি সংরক্ষণ করুন</button>
+</form>
+{% else %}
+    <p class="text-muted">উপস্থিতি নেওয়ার জন্য একটি শ্রেণি নির্বাচন করুন।</p>
+{% endif %}
+{% endblock %}

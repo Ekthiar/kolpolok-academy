@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}কল্পলোক একাডেমি - হোম{% endblock %}
+{% block content %}
+
+<div id="academyCarousel" class="carousel slide shadow-sm rounded-3 overflow-hidden mb-4" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#academyCarousel" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#academyCarousel" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#academyCarousel" data-bs-slide-to="2"></button>
+        <button type="button" data-bs-target="#academyCarousel" data-bs-slide-to="3"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <div class="carousel-slide d-flex align-items-center justify-content-center text-center text-white"
+                 style="background: linear-gradient(135deg,#0b4f45,#146356);">
+                <div>
+                    <i class="bi bi-mortarboard-fill display-3 mb-3"></i>
+                    <h2 class="fw-bold">মানসম্মত শিক্ষা, স্বপ্নপূরণের পথে</h2>
+                    <p class="lead mb-0">অভিজ্ঞ শিক্ষক ও যত্নশীল পাঠদানে আপনার সন্তানের উজ্জ্বল ভবিষ্যৎ</p>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="carousel-slide d-flex align-items-center justify-content-center text-center text-white"
+                 style="background: linear-gradient(135deg,#1a6f5c,#0d3b32);">
+                <div>
+                    <i class="bi bi-clipboard2-check-fill display-3 mb-3"></i>
+                    <h2 class="fw-bold">নিয়মিত ক্লাস ও পরীক্ষা</h2>
+                    <p class="lead mb-0">সাপ্তাহিক ও মাসিক মূল্যায়নের মাধ্যমে প্রতিটি শিক্ষার্থীর অগ্রগতি নিশ্চিতকরণ</p>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="carousel-slide d-flex align-items-center justify-content-center text-center text-white"
+                 style="background: linear-gradient(135deg,#0f5c4f,#08332b);">
+                <div>
+                    <i class="bi bi-people-fill display-3 mb-3"></i>
+                    <h2 class="fw-bold">অভিজ্ঞ ও যত্নশীল শিক্ষকমণ্ডলী</h2>
+                    <p class="lead mb-0">প্রতিটি শিক্ষার্থীর প্রতি ব্যক্তিগত মনোযোগ ও বিশেষ যত্ন</p>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="carousel-slide d-flex align-items-center justify-content-center text-center text-white"
+                 style="background: linear-gradient(135deg,#134b40,#062a23);">
+                <div>
+                    <i class="bi bi-graph-up-arrow display-3 mb-3"></i>
+                    <h2 class="fw-bold">আজকের প্রস্তুতি, আগামী দিনের সাফল্য</h2>
+                    <p class="lead mb-0">রেজাল্ট, উপস্থিতি ও বেতনের সম্পূর্ণ তথ্য এখন এক জায়গায়</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#academyCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#academyCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </button>
+</div>
+<style>
+    .carousel-slide { height: 320px; padding: 1.5rem; }
+    @media (max-width: 576px) { .carousel-slide { height: 260px; } .carousel-slide h2 { font-size: 1.3rem; } }
+</style>
+
+<div class="p-4 mb-4 bg-white rounded-3 shadow-sm text-center">
+    <h1 class="display-6 fw-bold" style="color:#0b4f45;">কল্পলোক একাডেমি কোচিং সেন্টার</h1>
+    <p class="lead">মানসম্মত শিক্ষা, অভিজ্ঞ শিক্ষক ও যত্নশীল পাঠদান — আপনার সন্তানের স্বপ্নপূরণের পথে আমরা পাশে।</p>
+    {% if not user.is_authenticated %}
+        <a href="{% url 'login' %}" class="btn btn-brand btn-lg mt-2">লগইন করুন</a>
+    {% else %}
+        <a href="{% url 'dashboard' %}" class="btn btn-brand btn-lg mt-2">আমার ড্যাশবোর্ড</a>
+    {% endif %}
+</div>
+
+<div class="row g-4">
+    <div class="col-md-8">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">আমাদের শ্রেণিসমূহ</h5>
+                    {% if user.is_admin_role %}
+                        <a href="{% url 'class_add' %}" class="btn btn-brand btn-sm">+ নতুন শ্রেণি যুক্ত করুন</a>
+                    {% endif %}
+                </div>
+                <div class="d-flex flex-wrap gap-2 mt-3">
+                    {% for c in classes %}
+                        <span class="badge bg-light text-dark border px-3 py-2">{{ c.name }}{% if c.section %} - {{ c.section }}{% endif %}</span>
+                    {% empty %}
+                        <p class="text-muted">এখনো কোনো শ্রেণি যুক্ত করা হয়নি।</p>
+                    {% endfor %}
+                </div>
+                <hr>
+                <h6>যোগাযোগ</h6>
+                <p class="mb-1"><i class="bi bi-telephone"></i> 01890-095054</p>
+                <p class="mb-1"><i class="bi bi-envelope"></i> kolpolokacademy@gmail.com</p>
+                <p class="mb-0"><i class="bi bi-geo-alt"></i> চট্টগ্রাম, বাংলাদেশ</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">সাম্প্রতিক নোটিশ</h5>
+                <ul class="list-group list-group-flush">
+                    {% for n in notices %}
+                        <li class="list-group-item">
+                            <strong>{{ n.title }}</strong>
+                            <div class="small text-muted">{{ n.created_at|date:"d M, Y" }}</div>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item text-muted">কোনো নোটিশ নেই।</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

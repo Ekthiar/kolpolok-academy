@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}শিক্ষার্থী ড্যাশবোর্ড{% endblock %}
+{% block content %}
+<h3 class="mb-4">স্বাগতম, {{ user.get_full_name|default:user.username }}</h3>
+{% if profile %}
+<div class="card shadow-sm mb-4">
+    <div class="card-body d-flex flex-wrap gap-4">
+        <div><span class="text-muted">শ্রেণি:</span> <strong>{{ profile.school_class }}</strong></div>
+        <div><span class="text-muted">রোল:</span> <strong>{{ profile.roll_number|default:"-" }}</strong></div>
+        <div><span class="text-muted">মাসিক বেতন:</span> <strong>৳{{ profile.monthly_fee }}</strong></div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title">ক্লাস রুটিন</h5>
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead><tr><th>বার</th><th>বিষয়</th><th>সময়</th></tr></thead>
+                        <tbody>
+                        {% for r in routines %}
+                            <tr><td>{{ r.get_day_display }}</td><td>{{ r.subject }}</td><td>{{ r.start_time }} - {{ r.end_time }}</td></tr>
+                        {% empty %}
+                            <tr><td colspan="3" class="text-muted">কোনো রুটিন নেই।</td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <a href="{% url 'routine_list' %}" class="small">সম্পূর্ণ রুটিন দেখুন &raquo;</a>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">সাম্প্রতিক ফলাফল</h5>
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead><tr><th>পরীক্ষা</th><th>বিষয়</th><th>নম্বর</th><th>গ্রেড</th></tr></thead>
+                        <tbody>
+                        {% for r in recent_results %}
+                            <tr>
+                                <td>{{ r.exam.name }}</td>
+                                <td>{{ r.exam.subject }}</td>
+                                <td>{{ r.marks_obtained }}/{{ r.exam.total_marks }}</td>
+                                <td><span class="badge bg-secondary">{{ r.grade }}</span></td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="4" class="text-muted">কোনো ফলাফল প্রকাশিত হয়নি।</td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <a href="{% url 'my_results' %}" class="small">সব ফলাফল দেখুন &raquo;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title">বেতনের অবস্থা</h5>
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead><tr><th>মাস</th><th>বকেয়া</th><th>পরিশোধিত</th><th>অবস্থা</th></tr></thead>
+                        <tbody>
+                        {% for f in fees %}
+                            <tr>
+                                <td>{{ f.get_month_display }} {{ f.year }}</td>
+                                <td>৳{{ f.amount_due }}</td>
+                                <td>৳{{ f.amount_paid }}</td>
+                                <td>
+                                    {% if f.status == "PAID" %}<span class="badge bg-success">পরিশোধিত</span>
+                                    {% elif f.status == "PARTIAL" %}<span class="badge bg-warning text-dark">আংশিক</span>
+                                    {% else %}<span class="badge bg-danger">বকেয়া</span>{% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="4" class="text-muted">কোনো তথ্য নেই।</td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <a href="{% url 'my_fees' %}" class="small">সম্পূর্ণ বেতন ইতিহাস দেখুন &raquo;</a>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">নোটিশ</h5>
+                <ul class="list-group list-group-flush">
+                    {% for n in notices %}
+                        <li class="list-group-item">{{ n.title }}</li>
+                    {% empty %}
+                        <li class="list-group-item text-muted">কোনো নোটিশ নেই।</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

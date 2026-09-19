@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}আমার বেতন{% endblock %}
+{% block content %}
+<h4 class="mb-3">আমার বেতনের তথ্য</h4>
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light"><tr><th>মাস</th><th>বছর</th><th>বকেয়া টাকা</th><th>পরিশোধিত</th><th>বাকি</th><th>পরিশোধের তারিখ</th><th>অবস্থা</th></tr></thead>
+            <tbody>
+            {% for f in fees %}
+                <tr>
+                    <td>{{ f.get_month_display }}</td>
+                    <td>{{ f.year }}</td>
+                    <td>৳{{ f.amount_due }}</td>
+                    <td>৳{{ f.amount_paid }}</td>
+                    <td>৳{{ f.due_amount }}</td>
+                    <td>{{ f.payment_date|default:"-" }}</td>
+                    <td>
+                        {% if f.status == "PAID" %}<span class="badge bg-success">পরিশোধিত</span>
+                        {% elif f.status == "PARTIAL" %}<span class="badge bg-warning text-dark">আংশিক</span>
+                        {% else %}<span class="badge bg-danger">বকেয়া</span>{% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="7" class="text-center text-muted py-4">কোনো তথ্য পাওয়া যায়নি।</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

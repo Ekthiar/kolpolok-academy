@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}অ্যাডমিন ড্যাশবোর্ড{% endblock %}
+{% block content %}
+<h3 class="mb-4">অ্যাডমিন ড্যাশবোর্ড</h3>
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card stat-card shadow-sm p-3">
+            <div class="text-muted">মোট শিক্ষার্থী</div>
+            <div class="fs-3 fw-bold">{{ total_students }}</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card shadow-sm p-3">
+            <div class="text-muted">মোট শিক্ষক</div>
+            <div class="fs-3 fw-bold">{{ total_teachers }}</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card shadow-sm p-3">
+            <div class="text-muted">মোট শ্রেণি</div>
+            <div class="fs-3 fw-bold">{{ total_classes }}</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card shadow-sm p-3">
+            <div class="text-muted">এই মাসে আদায়/মোট বেতন</div>
+            <div class="fs-5 fw-bold">৳{{ paid_amount_total }} / ৳{{ due_amount_total }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">দ্রুত কাজ</h5>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{% url 'add_student' %}" class="btn btn-brand btn-sm">নতুন শিক্ষার্থী</a>
+                    <a href="{% url 'add_teacher' %}" class="btn btn-brand btn-sm">নতুন শিক্ষক</a>
+                    <a href="{% url 'routine_add' %}" class="btn btn-outline-secondary btn-sm">রুটিন যুক্ত করুন</a>
+                    <a href="{% url 'exam_add' %}" class="btn btn-outline-secondary btn-sm">নতুন পরীক্ষা</a>
+                    <a href="{% url 'fee_generate' %}" class="btn btn-outline-secondary btn-sm">বেতন তালিকা তৈরি</a>
+                    <a href="{% url 'notice_add' %}" class="btn btn-outline-secondary btn-sm">নোটিশ দিন</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">সাম্প্রতিক নোটিশ</h5>
+                <ul class="list-group list-group-flush">
+                    {% for n in notices %}
+                        <li class="list-group-item">{{ n.title }}</li>
+                    {% empty %}
+                        <li class="list-group-item text-muted">কোনো নোটিশ নেই।</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

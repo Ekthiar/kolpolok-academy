@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}নোটিশ বোর্ড{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>নোটিশ বোর্ড</h4>
+    {% if user.is_teacher_role or user.is_admin_role %}
+        <a href="{% url 'notice_add' %}" class="btn btn-brand btn-sm">+ নতুন নোটিশ</a>
+    {% endif %}
+</div>
+
+<div class="row g-3">
+    {% for n in notices %}
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 {% if n.pinned %}border-warning{% endif %}">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h5 class="card-title">
+                            {% if n.pinned %}<i class="bi bi-pin-angle-fill text-warning"></i>{% endif %}
+                            {{ n.title }}
+                        </h5>
+                        {% if user.is_admin_role %}
+                            <a href="{% url 'notice_delete' n.pk %}" class="text-danger small">মুছুন</a>
+                        {% endif %}
+                    </div>
+                    <p class="card-text">{{ n.content|linebreaksbr }}</p>
+                    <div class="small text-muted">
+                        {{ n.created_at|date:"d M, Y H:i" }}
+                        {% if n.for_class %} | {{ n.for_class }}{% else %} | সবার জন্য{% endif %}
+                        {% if n.posted_by %} | প্রকাশক: {{ n.posted_by.get_full_name|default:n.posted_by.username }}{% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p class="text-muted">কোনো নোটিশ নেই।</p>
+    {% endfor %}
+</div>
+{% endblock %}
