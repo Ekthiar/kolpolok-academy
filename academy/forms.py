@@ -32,10 +32,25 @@ class ClassRoutineForm(forms.ModelForm):
 
 
 class ExamForm(forms.ModelForm):
+    subjects = forms.ModelMultipleChoiceField(
+        queryset=Subject.objects.all(),
+        label="বিষয়সমূহ (একাধিক বিষয় বাছাই করুন)",
+        widget=forms.CheckboxSelectMultiple,
+        help_text="যে যে বিষয়ে পরীক্ষা হবে তার পাশে টিক দিন। প্রতিটি বিষয়ের জন্য আলাদা পরীক্ষা তৈরি হবে।",
+    )
+
     class Meta:
         model = Exam
-        fields = ["name", "exam_type", "school_class", "subject", "date", "total_marks"]
+        fields = ["name", "exam_type", "school_class", "date", "total_marks"]
         widgets = {"date": forms.DateInput(attrs={"type": "date"})}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["subjects"].queryset = Subject.objects.select_related("school_class").order_by(
+            "school_class__order", "name"
+        )
+        # Field order: put subjects right after school_class
+        self.order_fields(["name", "exam_type", "school_class", "subjects", "date", "total_marks"])
 
 
 class FeePaymentForm(forms.ModelForm):

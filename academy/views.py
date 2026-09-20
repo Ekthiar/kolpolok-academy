@@ -243,14 +243,32 @@ def exam_add(request):
     if request.method == "POST":
         form = ExamForm(request.POST)
         if form.is_valid():
-            exam = form.save(commit=False)
-            exam.created_by = request.user
-            exam.save()
-            messages.success(request, "নতুন পরীক্ষা তৈরি হয়েছে। এখন ফলাফল যুক্ত করতে পারবেন।")
-            return redirect("exam_result_entry", pk=exam.pk)
+            subjects = form.cleaned_data["subjects"]
+            created_exams = []
+            for subject in subjects:
+                exam = Exam.objects.create(
+                    name=form.cleaned_data["name"],
+                    exam_type=form.cleaned_data["exam_type"],
+                    school_class=form.cleaned_data["school_class"],
+                    subject=subject,
+                    date=form.cleaned_data["date"],
+                    total_marks=form.cleaned_data["total_marks"],
+                    created_by=request.user,
+                )
+                created_exams.append(exam)
+
+            if len(created_exams) == 1:
+                messages.success(request, "নতুন পরীক্ষা তৈরি হয়েছে। এখন ফলাফল যুক্ত করতে পারবেন।")
+                return redirect("exam_result_entry", pk=created_exams[0].pk)
+
+            messages.success(
+                request,
+                f"{len(created_exams)}টি বিষয়ের জন্য পরীক্ষা তৈরি হয়েছে। প্রতিটি বিষয়ের ফলাফল আলাদাভাবে যুক্ত করুন।",
+            )
+            return redirect("exam_list")
     else:
         form = ExamForm()
-    return render(request, "academy/simple_form.html", {"form": form, "title": "নতুন পরীক্ষা তৈরি করুন"})
+    return render(request, "academy/exam_form.html", {"form": form, "title": "নতুন পরীক্ষা তৈরি করুন"})
 
 
 @admin_required

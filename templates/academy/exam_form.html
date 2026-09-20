@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="card shadow-sm" style="max-width:640px;margin:auto;">
+    <div class="card-body">
+        <h4 class="mb-4">{{ title }}</h4>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            {% for field in form %}
+                {% if field.name != "subjects" %}
+                    <div class="mb-3">
+                        <label class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+                        {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            <div class="mb-3">
+                <label class="form-label">{{ form.subjects.label }}</label>
+                {% if form.subjects.help_text %}<div class="form-text mb-2">{{ form.subjects.help_text }}</div>{% endif %}
+                <div class="border rounded-3 p-2" style="max-height:320px; overflow-y:auto;">
+                    <div class="row g-1">
+                        {% regroup form.subjects by data.value.instance.school_class as class_groups %}
+                        {% for group in class_groups %}
+                            <div class="col-12 mt-2 mb-1">
+                                <small class="text-muted fw-bold">{{ group.grouper }}</small>
+                            </div>
+                            {% for checkbox in group.list %}
+                                <div class="col-6 col-md-4">
+                                    <div class="form-check">
+                                        {{ checkbox.tag }}
+                                        <label class="form-check-label" for="{{ checkbox.id_for_label }}">
+                                            {{ checkbox.data.value.instance.name }}
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% for error in form.subjects.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+            </div>
+
+            <button type="submit" class="btn btn-brand">সংরক্ষণ করুন</button>
+            <a href="javascript:history.back()" class="btn btn-outline-secondary">বাতিল</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
